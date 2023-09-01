@@ -1,5 +1,5 @@
 # cmake minimum version required
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 2.8.12)
 
 # project info
 project (List)
@@ -22,4 +22,4 @@ add_subdirectory(./src ../bin) # 指明本项目包含一个子目录 src, 这�
 add_executable(List main.cpp)
 
 # 添加链接库
-target_link_libraries(List ListFunc) # 指明可执行文件 Demo 需要连接一个名为 Test 的链接库
+target_link_libraries(List ListFunc) # 指明可执行文件 List 需要连接一个名为 ListFunc 的链接库
