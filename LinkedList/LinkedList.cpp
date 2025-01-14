@@ -58,7 +58,7 @@ public:
             temp = temp->next;
             i++;
         }
-        if (i < pos - 1){
+        if (i < pos - 1){ // if the position is greater than the length of the linked list
             cout << " Invalid position " << endl;
             return;
         }
