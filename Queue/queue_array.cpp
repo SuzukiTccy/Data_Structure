@@ -8,7 +8,7 @@ private:
     T *array;
     int front;
     int rear; // points to the last element in the queue
-    int capacity;
+    int capacity; // size of the array
     int size;
 
 public:
