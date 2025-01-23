@@ -1,3 +1,8 @@
 {
-    "cmake.sourceDirectory": "/Users/ccy/Documents/Data_Structure/List"
+    "cmake.sourceDirectory": "/Users/ccy/Documents/Data_Structure/List",
+    "files.associations": {
+        "*.cpp": "cpp",
+        "queue": "cpp",
+        "ios": "cpp"
+    }
 }
