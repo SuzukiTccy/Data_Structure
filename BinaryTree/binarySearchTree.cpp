@@ -69,6 +69,28 @@ public:
             std::cout << "empty tree" << std::endl;
             return;
         }
+        // if the root node is the target node
+        if (this->root->data == target){
+            if (this->root->left == nullptr && this->root->right == nullptr){
+                delete this->root;
+                this->root = nullptr;
+                return;
+            }
+            if (this->root->left == nullptr){
+                TreeNode* temp = this->root;
+                this->root = temp->right;
+                delete temp;
+                temp = nullptr;
+                return;
+            }
+            if (this->root->right == nullptr){
+                TreeNode* temp = this->root;
+                this->root = temp->left;
+                delete temp;
+                temp = nullptr;
+                return;
+            }
+        }
 
         TreeNode* temp = this->root;
         TreeNode* parent = nullptr;
@@ -91,10 +113,12 @@ public:
                         largestNodeParent = largestNode;
                         largestNode = largestNode->right;
                     }
+                    // if the largest node have a left child
                     if (largestNode->left){
+                        // if the largest node is the left child of its parent
                         if (largestNodeParent->left == largestNode){
-                            largestNodeParent->left = largestNode->left;
-                        }else largestNodeParent->right = largestNode->left;
+                            largestNodeParent->left = largestNode->left; // the largest node's left child becomes the left child of its parent
+                        }else largestNodeParent->right = largestNode->left; // if the largest node is the right child of its parent
                     }else largestNodeParent->right = nullptr;
                     temp->data = largestNode->data;
                     delete largestNode;
