@@ -13,11 +13,10 @@ struct TreeNode{
 };
 
 class BinaryTree{
-private:
-    TreeNode* root;
-    int nodeCount;
 public:
-    BinaryTree(): root(nullptr), nodeCount(0){};
+    TreeNode* root;
+public:
+    BinaryTree(TreeNode* root = nullptr):root(root){};
     virtual ~BinaryTree(){
         if (root == nullptr) return;
         std::queue<TreeNode*> q;
@@ -32,12 +31,17 @@ public:
         }
     }
 
-    virtual void insert(int data){};
-    virtual void deleteNode(int data){};
+    virtual void searchNode(const int& target){};
+    virtual void insertNode(const int& data){};
+    virtual void deleteNode(const int& data){};
 
     unsigned int treeHeight(TreeNode* root){
         if (root == nullptr) return 0;
         return std::max(treeHeight(root->left), treeHeight(root->right)) + 1;
+    }
+
+    unsigned int treeHeight(){
+        return treeHeight(this->root);
     }
 
     void LevelOrderTraversal(TreeNode* root){
@@ -53,6 +57,10 @@ public:
         }
     }
 
+    void LevelOrderTraversal(){
+        LevelOrderTraversal(this->root);
+    }
+
     void PreOrderTraversal(TreeNode* root){
         if (root == nullptr) return;
         std::stack<TreeNode*> s;
@@ -65,6 +73,10 @@ public:
             if (temp->right != nullptr) s.push(temp->right);
             if (temp->left != nullptr) s.push(temp->left);
         }
+    }
+
+    void PreOrderTraversal(){
+        PreOrderTraversal(this->root);
     }
 
     void InOrderTraversal(TreeNode* root){
@@ -88,11 +100,19 @@ public:
         }
     }
 
+    void InOrderTraversal(){
+        InOrderTraversal(this->root);
+    }
+
     void PostOrderTraversal(TreeNode* root){
         if (root == nullptr) return;
         if (root->left != nullptr) PostOrderTraversal(root->left);
         if (root->right != nullptr) PostOrderTraversal(root->right);
         std::cout << root->data << " ";
+    }
+
+    void PostOrderTraversal(){
+        PostOrderTraversal(this->root);
     }
 
     void PrintTree(TreeNode* root){
@@ -106,11 +126,11 @@ public:
         unsigned int count = 0; // number of nodes in the current level
         unsigned int space_between = 0; // number of spaces between nodes in the current level
         unsigned int space_before = 0; // number of spaces before the current node in the current level
-        std::vector<TreeNode*> vec; // store the nodes in the current level
+        // std::vector<TreeNode*> vec; // store the nodes in the current level
         while(!q.empty() && level < height){
             ++level;
             count = q.size();
-            vec.clear();
+            // vec.clear();
 
             space_before = (unsigned int)pow(2, height - level) - 1;
             space_between = (unsigned int)pow(2, height - level + 1) - 1;
@@ -119,7 +139,7 @@ public:
             while(count--){
                 temp = q.front();
                 q.pop();
-                vec.push_back(temp);
+                // vec.push_back(temp);
 
                 if (temp){
                     std::cout << std::setw(2) << temp->data;
@@ -151,17 +171,21 @@ public:
             // }
         }
     }
+    
+    void PrintTree(){
+        PrintTree(this->root); // overload, use the root node of the tree
+    }
 };
 
 
-int main(){
-    TreeNode* root = new TreeNode(1);
-    root->left = new TreeNode(2);
-    root->right = new TreeNode(3);
-    root->left->left = new TreeNode(4);
-    root->left->right = new TreeNode(5);
-    root->right->left = new TreeNode(6);
-    root->right->right = new TreeNode(7);
+// int main(){
+//     TreeNode* root = new TreeNode(1);
+//     root->left = new TreeNode(2);
+//     root->right = new TreeNode(3);
+//     root->left->left = new TreeNode(4);
+//     root->left->right = new TreeNode(5);
+//     root->right->left = new TreeNode(6);
+//     root->right->right = new TreeNode(7);
 
-    BinaryTree{}.PrintTree(root);
-}
+//     BinaryTree{}.PrintTree(root);
+// }
