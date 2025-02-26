@@ -12,16 +12,17 @@ struct TreeNode{
     TreeNode(int data): data(data), left(nullptr), right(nullptr){}
 };
 
+template<class T>
 class BinaryTree{
 public:
-    TreeNode* root;
+    T* root;
 public:
-    BinaryTree(TreeNode* root = nullptr):root(root){};
+    BinaryTree(T* root = nullptr):root(root){};
     virtual ~BinaryTree(){
         if (root == nullptr) return;
-        std::queue<TreeNode*> q;
+        std::queue<T*> q;
         q.push(root);
-        TreeNode* temp = nullptr;
+        T* temp = nullptr;
         while(!q.empty()){
             temp = q.front();
             q.pop();
@@ -35,19 +36,22 @@ public:
     virtual void insertNode(const int& data){};
     virtual void deleteNode(const int& data){};
 
-    unsigned int treeHeight(TreeNode* root){
-        if (root == nullptr) return 0;
-        return std::max(treeHeight(root->left), treeHeight(root->right)) + 1;
+    unsigned int treeHeight(T* node){
+        if (node == nullptr) return -1;
+        // int _height = std::max(treeHeight(node->left), treeHeight(node->right)) + 1;  // 无法得到正确高度 原因未知
+        int _lheight = treeHeight(node->left);
+        int _rheight = treeHeight(node->right);
+        return (_lheight > _rheight) ? _lheight + 1 : _rheight + 1;
     }
 
     unsigned int treeHeight(){
         return treeHeight(this->root);
     }
 
-    void LevelOrderTraversal(TreeNode* root){
+    void LevelOrderTraversal(T* root){
         if (root == nullptr) return;
-        std::queue<TreeNode*> q;
-        TreeNode* temp = nullptr;
+        std::queue<T*> q;
+        T* temp = nullptr;
         while(!q.empty()){
             temp = q.front();
             q.pop();
@@ -61,11 +65,11 @@ public:
         LevelOrderTraversal(this->root);
     }
 
-    void PreOrderTraversal(TreeNode* root){
+    void PreOrderTraversal(T* root){
         if (root == nullptr) return;
-        std::stack<TreeNode*> s;
+        std::stack<T*> s;
         s.push(root);
-        TreeNode* temp = nullptr;
+        T* temp = nullptr;
         while(!s.empty()){
             temp = s.top();
             s.pop();
@@ -79,10 +83,10 @@ public:
         PreOrderTraversal(this->root);
     }
 
-    void InOrderTraversal(TreeNode* root){
+    void InOrderTraversal(T* root){
         if (root == nullptr) return;
-        std::stack<TreeNode*> s;
-        TreeNode* temp = root;
+        std::stack<T*> s;
+        T* temp = root;
         while(temp != nullptr || !s.empty()){
             while(temp != nullptr){
                 // 1. push all the left nodes
@@ -104,7 +108,7 @@ public:
         InOrderTraversal(this->root);
     }
 
-    void PostOrderTraversal(TreeNode* root){
+    void PostOrderTraversal(T* root){
         if (root == nullptr) return;
         if (root->left != nullptr) PostOrderTraversal(root->left);
         if (root->right != nullptr) PostOrderTraversal(root->right);
@@ -115,18 +119,18 @@ public:
         PostOrderTraversal(this->root);
     }
 
-    void PrintTree(TreeNode* root){
+    void PrintTree(T* root){
         if (root == nullptr) return;
-        unsigned int height = treeHeight(root);
+        unsigned int height = treeHeight() + 1;
 
         unsigned int level = 0; // current level
-        std::queue<TreeNode*> q;
+        std::queue<T*> q;
         q.push(root);
-        TreeNode* temp = nullptr;
+        T* temp = nullptr;
         unsigned int count = 0; // number of nodes in the current level
         unsigned int space_between = 0; // number of spaces between nodes in the current level
         unsigned int space_before = 0; // number of spaces before the current node in the current level
-        // std::vector<TreeNode*> vec; // store the nodes in the current level
+        // std::vector<T*> vec; // store the nodes in the current level
         while(!q.empty() && level < height){
             ++level;
             count = q.size();
@@ -145,7 +149,12 @@ public:
                     std::cout << std::setw(2) << temp->data;
                     q.push(temp->left);
                     q.push(temp->right);
-                }else std::cout << "  ";
+                }
+                else{
+                    std::cout << "  ";
+                    q.push(nullptr);
+                    q.push(nullptr);
+                }
 
                 if (count > 0) std::cout << std::string(space_between * 2, ' ');
             }
@@ -156,7 +165,7 @@ public:
             // space_between = (unsigned int)pow(2, height - level) - 2;
             // if (level < height){
             //     std::cout << std::string(space_before * 2 - 1, ' '); // print the spaces before the first node in the next level
-            //     for(TreeNode* node : vec){
+            //     for(T* node : vec){
             //         if (node){
             //             std::cout << std::setw(2) << (node->left ? "/" : " ");
             //             std::cout << std::string((space_between * 2 - 2), ' ');
@@ -176,16 +185,3 @@ public:
         PrintTree(this->root); // overload, use the root node of the tree
     }
 };
-
-
-// int main(){
-//     TreeNode* root = new TreeNode(1);
-//     root->left = new TreeNode(2);
-//     root->right = new TreeNode(3);
-//     root->left->left = new TreeNode(4);
-//     root->left->right = new TreeNode(5);
-//     root->right->left = new TreeNode(6);
-//     root->right->right = new TreeNode(7);
-
-//     BinaryTree{}.PrintTree(root);
-// }
