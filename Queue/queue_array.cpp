@@ -5,80 +5,72 @@ using namespace std;
 template <class T>
 class Queue{
 private:
-    T *array;
-    int front;
-    int rear; // points to the last element in the queue
-    int capacity; // size of the array
-    int size;
+    T *arr;
+    size_t front;
+    size_t rear;
+    size_t size;
+    size_t capacity;
 
 public:
-    Queue(size_t capacity): front(0), rear(0), size(0), capacity(capacity){
-        if(capacity < 1){
-            throw "Invalid capacity";
-        }
-        array = new T[capacity];
+    Queue(size_t capacity):front(0), rear(0), size(0), capacity(capacity){
+        arr = new T[capacity];
     }
 
     ~Queue(){
-        delete[] array;
+        delete [] arr;
     }
 
     bool isFull(){
-        if (size == capacity) return true;
-        return false;
+        return size == capacity;
     }
 
     bool isEmpty(){
-        if (size == 0) return true;
-        return false;
+        return size == 0;
     }
 
     void enqueue(const T& data){
-        if (isFull()){
-            cout << "Queue is full" << endl;
+        if(isFull()){
+            cout << "Queue is full! " << endl;
             return;
         }
-        if (isEmpty()){
-            array[front] = data;
+        if(isEmpty()){
+            arr[front] = data;
             size++;
             return;
         }
         rear = (rear + 1) % capacity;
-        array[rear] = data;
+        arr[rear] = data;
         size++;
     }
-
-    void dequeue(T& target){
-        if (isEmpty()){
-            cout << "Queue is empty" << endl;
-            return;
+    T dequeue(){
+        if(isEmpty()){
+            cout << "Queue is empty! " << endl;
+            return T();
         }
-        target = array[front];
-        front = (front + 1) % capacity;
         size--;
+        T data = arr[front];
+        front = (front + 1) % capacity;
+        return data;
     }
 
-    bool peek(T& target){
-        if (isEmpty()){
-            cout << "Queue is empty" << endl;
-            target = T();
-            return false;
+    T peek(){
+        if(isEmpty()){
+            cout << "Queue is empty! " << endl;
+            return T();
         }
-        target = array[front];
-        return true;
+        return arr[front];
     }
 
     void print(){
-        if (isEmpty()){
-            cout << "Queue is empty" << endl;
+        if(isEmpty()){
+            cout << "Queue is empty! " << endl;
             return;
         }
-        for (int i = 0; i < size; ++i){
-            cout << array[(front + i) % capacity] << " ";
+        for(int i = 0; i < size; i++){
+            cout << arr[(front + i) % capacity] << " ";
         }
         cout << endl;
     }
-
 };
 
 
@@ -89,33 +81,33 @@ int main(){
     q.enqueue(3);
     q.enqueue(4);
     q.enqueue(5);
-    q.print();
+    q.print(); // 1 2 3 4 5
 
-    q.enqueue(6);
-    q.print();
+    q.enqueue(6); // Queue is full!
+    q.print(); // 1 2 3 4 5
 
-    int target;
-    q.dequeue(target);
-    cout << "target = " << target << endl;
-    q.print();
+    int target = q.dequeue();
+    cout << "target = " << target << endl; // target = 1
+    q.print(); // 2 3 4 5
 
     target = 6;
     q.enqueue(target);
-    q.print();
+    q.print(); // 2 3 4 5 6
+    
+    cout << endl;
 
     cout << "<< ========Queue of strings======== >>" << endl;
     Queue<string> q2(5);
     q2.enqueue("Hello");
     q2.enqueue("World");
     q2.enqueue("!");
-    q2.print();
+    q2.print(); // Hello World !
 
-    string target2;
-    q2.dequeue(target2);
-    cout << "target2 = " << target2 << endl;
-    q2.print();
+    string target2 = q2.dequeue();
+    cout << "target2 = " << target2 << endl; // target2 = Hello
+    q2.print(); // World !
 
     target2 = "Hello";
     q2.enqueue(target2);
-    q2.print();
+    q2.print(); // World ! Hello
 }

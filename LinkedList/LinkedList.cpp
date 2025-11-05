@@ -24,6 +24,7 @@ public:
             delete temp;
             temp = sentinel;
         }
+        cout << "LinkedList release!" << endl;
     }
     bool isEmpty(){
         return sentinel->next == nullptr;
