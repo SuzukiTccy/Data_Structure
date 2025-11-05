@@ -2,184 +2,171 @@
 using namespace std;
 
 template <class T>
-struct LinkedList
-{
+struct LinkedListNode {
     T data;
-    LinkedList<T>* next;
+    LinkedListNode<T>* next;
+    LinkedListNode(T data, LinkedListNode<T>* next = nullptr):data(data), next(next){}
 };
 
 template <class T>
-class LinkedListClass{
+class LinkedList {
 private:
-    LinkedList<T>* head; // Sentinel Node 
+    LinkedListNode<T>* sentinel; // Sentinel Node 
+
 public:
-    LinkedListClass(){
-        head = new LinkedList<T>;
-        head->next = nullptr;
+    LinkedList(){
+        sentinel = new LinkedListNode<T>(0, nullptr);
     }
-    ~LinkedListClass(){
-        LinkedList<T>* temp = head;
-        while(temp){
-            head = head->next;
+    ~LinkedList(){
+        LinkedListNode<T>* temp = sentinel;
+        while(temp != nullptr){
+            sentinel = sentinel->next;
             delete temp;
-            temp = head;
+            temp = sentinel;
         }
     }
-    void InsertAtHead(const T& data){
-
-        LinkedList<T>* temp = new LinkedList<T>;
-        temp->data = data;
-        temp->next = head->next;
-        head->next = temp;
+    bool isEmpty(){
+        return sentinel->next == nullptr;
     }
 
-    void InsertAtTail(const T& data){
-        if (!head->next){
-            InsertAtHead(data);
+    void insertAtHead(const T& data){
+        LinkedListNode<T>* newNode = new LinkedListNode<T>(data, sentinel->next);
+        sentinel->next = newNode;
+    }
+
+    void insertAtTail(const T& data){
+        if(isEmpty()){
+            insertAtHead(data);
             return;
         }
-        LinkedList<T>* temp = head;
-        while(temp->next){
+        LinkedListNode<T>* temp = sentinel->next;
+        while(temp->next != nullptr){
             temp = temp->next;
         }
-        temp->next = new LinkedList<T>;
-        temp->next->data = data;
+        temp->next = new LinkedListNode<T>(data, nullptr);
     }
 
     // Insert at the pos position in the linked list, pos start from 0, no include the sentinel node
-    void InsertAtPosition(const T& data, const int& pos){
-        if (pos < 0){
-            cout << " Invalid position " << endl;
+    void insertAtPos(const T& data, const int& pos){
+        if(pos < 0){
+            cout << "Invalid position" << endl;
             return;
         }
-        int i = -1; // i is the position of the current node
-        LinkedList<T>* temp = head;
-        while(temp->next && i != pos - 1){ // i > 1 because we need to insert at the pos position, so we need to find the position before pos
+        int cur = -1; // -1 because we are starting from sentinel node
+        LinkedListNode<T>* temp = sentinel;
+        while(temp != nullptr && cur != pos - 1){
             temp = temp->next;
-            i++;
+            cur++;
         }
-        if (i < pos - 1){ // if the position is greater than the length of the linked list
-            cout << " Invalid position " << endl;
+        if(cur < pos - 1){ // if position is greater than length of list
+            cout << "Invalid position" << endl;
             return;
         }
-        LinkedList<T>* newNode = new LinkedList<T>;
-        newNode->data = data;
-        newNode->next = temp->next;
+        LinkedListNode<T>* newNode = new LinkedListNode<T>(data, temp->next);
         temp->next = newNode;
     }
 
     // delete the node at the pos position in the linked list, pos start from 0
-    void DeleteAtPosition(const int& pos){
-        if (pos < 0){
-            cout << " Invalid position " << endl;
+    void deleteAtPos(const int& pos){
+        if(pos < 0){
+            cout << "Invalid position" << endl;
             return;
         }
-        if (!head->next){
-            cout << " The linked list is empty " << endl;
-            return;
-        }
-        int i = -1; // i is the position of the current node
-        LinkedList<T>* temp = head;
-        while(temp->next && i != pos - 1){ // i > 1 because we need to delete at the pos position, so we need to find the position before pos
+        int cur = -1; // -1 because we are starting from sentinel node
+        LinkedListNode<T>* temp = sentinel;
+        while(temp != nullptr && cur != pos - 1){
             temp = temp->next;
-            i++;
+            cur++;
         }
-        if (i < pos - 1){ // if the position is greater than the length of the linked list or the position is the last node
-            cout << " Invalid position " << endl;
+        if(cur < pos - 2){ // if position is greater than length of list
+            cout << "Invalid position" << endl;
             return;
         }
-        LinkedList<T>* toDelete = temp->next;
+        LinkedListNode<T>* toDelete = temp->next;
         temp->next = toDelete->next;
         delete toDelete;
     }
 
-    // delete the first node with the given data in the linked list
-    void DeleteNodeWithValue(const T& target){
-        if (!head->next){
-            cout << " The linked list is empty " << endl;
-            return;
-        }
-        LinkedList<T>* temp = head;
-        while(temp->next && temp->next->data != target){
+    void deleteNodesWithVal(const T& data){
+        LinkedListNode<T>* temp = sentinel;
+        while(temp->next != nullptr && temp->next->data != data){
             temp = temp->next;
-        }
-        if (!temp->next){
-            cout << " The node with the given data does not exist " << endl;
-            return;
-        }
+       }
+       if(temp->next == nullptr){
+           cout << "No nodes with value " << data << " found" << endl;
+           return;
+       }
+       LinkedListNode<T>* toDelete = temp->next;
+       temp->next = toDelete->next;
+       delete toDelete;
 
-        LinkedList<T>* toDelete = temp->next;
-        temp->next = toDelete->next;
-        delete toDelete;
-
-        cout << "delete the first node with the given data: " << target << endl;
-
+       cout << "delete the first node with the given data: " << data << endl;
     }
 
-    void ReverseList(){
-        if (!head->next) return;
-        LinkedList<T>* prev = nullptr;
-        LinkedList<T>* curr = head->next;
-        LinkedList<T>* next = nullptr;
-        while(curr){
+    void reverseLinkedList(){
+        LinkedListNode<T>* prev = nullptr;
+        LinkedListNode<T>* curr = sentinel->next;
+        LinkedListNode<T>* next = nullptr;
+        while(curr != nullptr){
             next = curr->next;
             curr->next = prev;
             prev = curr;
             curr = next;
         }
-        head->next = prev; // update the head->next to the last node
+        sentinel->next = prev;
     }
 
-    void PrintList(){
-        LinkedList<T>* temp = head->next;
-        while(temp){
+    void printList(){
+        LinkedListNode<T>* temp = sentinel->next;
+        while(temp != nullptr){
             cout << temp->data << " ";
             temp = temp->next;
         }
         cout << endl;
     }
-
 };
 
 int main(){
-    LinkedListClass<int> LKlist;
-    LKlist.InsertAtHead(1);
-    LKlist.InsertAtHead(2);
-    LKlist.InsertAtHead(3);
-    LKlist.InsertAtHead(4);
-    LKlist.InsertAtHead(5);
-    LKlist.PrintList();
+    LinkedList<int> LKlist;
+    LKlist.insertAtHead(1);
+    LKlist.insertAtHead(2);
+    LKlist.insertAtHead(3);
+    LKlist.insertAtHead(4);
+    LKlist.insertAtHead(5);
 
-    cout << "LKlist.InsertAtTail(6)" << endl;
-    LKlist.InsertAtTail(6);
-    LKlist.PrintList();
+    cout << "LKlist.printList()" << endl;
+    LKlist.printList();
 
-    cout << "LKlist.InsertAtHead(0)" << endl;
-    LKlist.InsertAtHead(0);
-    LKlist.PrintList();
+    cout << "LKlist.insertAtTail(6)" << endl;
+    LKlist.insertAtTail(6);
+    LKlist.printList();
 
-    cout << "LKlist.InsertAtPosition(6, 2)" << endl;
-    LKlist.InsertAtPosition(6, 2);
-    LKlist.PrintList();
+    cout << "LKlist.insertAtHead(0)" << endl;
+    LKlist.insertAtHead(0);
+    LKlist.printList();
 
-    cout << "LKlist.InsertAtPosition(7, 10)" << endl;
-    LKlist.InsertAtPosition(7, 10); // except print "Invalid position"
-    LKlist.PrintList();
+    cout << "LKlist.insertAtPos(6, 2)" << endl;
+    LKlist.insertAtPos(6, 2);
+    LKlist.printList();
 
-    cout << "LKlist.DeleteNodeWithValue(10)" << endl;
-    LKlist.DeleteNodeWithValue(10); // except print "The node with the given data does not exist"
+    cout << "LKlist.insertAtPos(7, 10)" << endl;
+    LKlist.insertAtPos(7, 10); // except print "Invalid position"
+    LKlist.printList();
 
-    cout << "LKlist.DeleteNodeWithValue(6)" << endl;
-    LKlist.DeleteNodeWithValue(6);
-    LKlist.PrintList();
+    cout << "LKlist.deleteNodesWithVal(10)" << endl;
+    LKlist.deleteNodesWithVal(10); // except print "The node with the given data does not exist"
+
+    cout << "LKlist.deleteNodesWithVal(6)" << endl;
+    LKlist.deleteNodesWithVal(6);
+    LKlist.printList();
 
 
-    cout << "LKlist.DeleteAtPosition(4)" << endl;
-    LKlist.DeleteAtPosition(4);
-    LKlist.PrintList();
+    cout << "LKlist.deleteAtPos(4)" << endl;
+    LKlist.deleteAtPos(4);
+    LKlist.printList();
 
-    cout << "LKlist.ReverseList()" << endl;
-    LKlist.ReverseList();
-    LKlist.PrintList();
+    cout << "LKlist.reverseLinkedList()" << endl;
+    LKlist.reverseLinkedList();
+    LKlist.printList();
 
 }
