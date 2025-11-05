@@ -1,6 +1,13 @@
 #include<iostream>
 using namespace std;
 
+
+/*
+    * 哈希表
+    * 哈希函数：key % capacity
+    * 冲突解决：链表
+*/
+
 struct Node{
     int key;
     int value;
@@ -21,19 +28,17 @@ private:
     HASH_FUNC hashFunction; // hash function
 
 public:
-    ChainedHashMap(size_t capacity, HASH_FUNC hashFunction): size(0), capacity(capacity), hashFunction(hashFunction){
+    ChainedHashMap(size_t capacity, HASH_FUNC hashFunction): size(0), capacity(capacity), \
+    hashFunction(hashFunction){
         table = new Node*[capacity];
-        for(int i = 0; i < capacity; i++){
-            table[i] = nullptr;
-        }
+        for(int i = 0; i < capacity; i++) table[i] = nullptr;
     }
     
     ~ChainedHashMap(){
-        Node* temp = nullptr;
         for(int i = 0; i < capacity; i++){
             Node* node = table[i];
             while(node != nullptr){
-                temp = node->next;
+                Node* temp = node;
                 node = node->next;
                 delete temp;
             }
@@ -42,41 +47,43 @@ public:
 
     void insert(int key, int value){
         size_t hash_value = hashFunction(capacity, key);
-        if (table[hash_value] == nullptr) table[hash_value] = new Node(key, value, nullptr);
+        if(table[hash_value] == nullptr) table[hash_value] = new Node(key, value, nullptr);
         else{
             Node* node = table[hash_value];
-            while(node->next != nullptr){
-                node = node->next;
-            }
+            while(node->next != nullptr) node = node->next;
             node->next = new Node(key, value, nullptr);
         }
         size++;
-        
     }
 
+/**
+ * 扩展哈希表容量的函数
+ * 当当前负载因子超过阈值时，创建一个新的更大的哈希表，
+ * 并将所有元素从旧表重新哈希到新表中
+ */
     void extendMap(){
+    // 计算当前负载因子（元素数量与容量的比值）
         float load_factor = static_cast<float>(size) / capacity;
-        if (load_factor < load_factor_threshold) return;
+        if(load_factor < load_factor_threshold) return;
+
         size_t new_capacity = capacity * extendRatio;
         Node** new_table = new Node*[new_capacity];
-        for(int i = 0; i < new_capacity; i++){
-            new_table[i] = nullptr;
-        }
+        for(int i = 0; i < new_capacity; i++) new_table[i] = nullptr;
+
         for(int i = 0; i < capacity; i++){
             Node* node = table[i];
             while(node != nullptr){
                 size_t hash_value = hashFunction(new_capacity, node->key);
-                if (new_table[hash_value] == nullptr) new_table[hash_value] = new Node{node->key, node->value, nullptr};
+                if(new_table[hash_value] == nullptr) new_table[hash_value] = new Node(node->key, node->value, nullptr);
                 else{
                     Node* new_node = new_table[hash_value];
-                    while(new_node->next != nullptr){
-                        new_node = new_node->next;
-                    }
-                    new_node->next = new Node{node->key, node->value, nullptr};
+                    while(new_node->next != nullptr) new_node = new_node->next;
+                    new_node->next = new Node(node->key, node->value, nullptr);
                 }
                 node = node->next;
             }
         }
+
         delete[] table;
         table = new_table;
         capacity = new_capacity;
@@ -102,30 +109,26 @@ public:
         Node* node = table[hash_value];
         Node* prev = nullptr;
         while(node != nullptr){
-            if (node->key == key){
-                // 删除链表头
-                if (prev == nullptr){
-                    table[hash_value] = node->next;
-                }else{
-                    // 删除链表中间或尾部
-                    prev->next = node->next;
-                    delete node;
-                }
-                cout << "key:" << key << " removed" << endl;
+            if(node->key == key){
+                if(prev == nullptr) table[hash_value] = node->next; // 代表着要删除的是第一个节点
+                else prev->next = node->next; // 代表着要删除的是中间或者最后节点
+
+                delete node;
                 size--;
-                return;
+                cout << "key:" << key << " removed" << endl;
+                return;      
             }
             prev = node;
             node = node->next;
         }
-        cout << "key:" << key << " not found" << endl;
+        cout << "Key not found" << endl;
     }
 
     void print(){
         for(int i = 0; i < capacity; i++){
             Node* node = table[i];
             while(node != nullptr){
-                cout << node->key << " " << node->value << endl;
+                cout << "(" <<node->key << ", " << node->value << ")" << "\t";
                 node = node->next;
             }
             cout << endl;
@@ -146,7 +149,13 @@ int main(){
     map.insert(1, 1);
     map.insert(2, 2);
     map.insert(3, 3);
+    map.insert(10, 10);
+    map.insert(13, 13);
     map.print();
+
+    cout << endl;
+    cout << "map.search(13)" << endl;
+    map.search(13);
 
     cout << "map.remove(2)" << endl;
     map.remove(2);
