@@ -8,87 +8,98 @@ struct Node{
 };
 
 template <class T>
-class Stack{
+class LinkedStack{
 private:
-    Node<T>* top; // top of the stack
+    Node<T> *top;
     size_t size;
     size_t capacity;
 public:
-    Stack(size_t capacity):top(nullptr),size(0),capacity(capacity){}
+    LinkedStack(size_t capacity):top(nullptr), size(0), capacity(capacity){}
+
+    ~LinkedStack(){
+        Node<T> *temp = top;
+        while(temp != nullptr){
+            top = top->next;
+            delete temp;
+            temp = top;
+        }
+    }
+
     bool isEmpty() const{
         return size == 0;
     }
+
     bool isFull() const{
         return size == capacity;
     }
 
-    void push(const T& data){
+    void push(const T &data){
         if(isFull()){
-            cout<<"Stack is full"<<endl;
+            cout << "LinkedStack is full!" << endl;
             return;
         }
-        Node<T>* temp = new Node<T>;
-        temp->data = data;
-        temp->next = top;
-        top = temp;
+        Node<T> *newNode = new Node<T>;
+        newNode->data = data;
+        newNode->next = top;
+        top = newNode;
         size++;
     }
 
     void pop(T& target){
         if(isEmpty()){
-            cout<<"Stack is empty"<<endl;
+            cout << "LinkedStack is empty!" << endl;
             return;
         }
         target = top->data;
-        Node<T>* temp = top;
+        Node<T> *temp = top;
         top = top->next;
         delete temp;
         size--;
     }
 
     void print() const{
-        Node<T>* temp = top;
+        Node<T> *temp = top;
         while(temp != nullptr){
-            cout<<temp->data<<" ";
+            cout << temp->data << " ";
             temp = temp->next;
         }
-        cout<<endl;
+        cout << endl;
     }
 };
 
 
 int main(){
-    Stack<int> stack(5);
-    stack.push(1);
-    stack.push(2);
-    stack.push(3);
-    stack.push(4);
-    stack.push(5);
-    stack.print();
+    LinkedStack<int> LS1(5);
+    LS1.push(1);
+    LS1.push(2);
+    LS1.push(3);
+    LS1.push(4);
+    LS1.push(5);
+    LS1.print();
 
-    stack.push(6);
+    LS1.push(6);
 
     int target;
-    stack.pop(target);
+    LS1.pop(target);
     cout<< "target = " << target <<endl;
-    stack.print();
+    LS1.print();
 
-    cout << "<< ===== stack of string ==== >>" << endl;
+    cout << "<< ===== LinkedStack of string ==== >>" << endl;
 
-    Stack<string> stack2(5);
-    stack2.push("hello");
-    stack2.push("world");
-    stack2.push("stack");
-    stack2.push("linked");
-    stack2.push("list");
-    stack2.print();
+    LinkedStack<string> LS2(5);
+    LS2.push("hello");
+    LS2.push("world");
+    LS2.push("LinkedStack");
+    LS2.push("linked");
+    LS2.push("list");
+    LS2.print();
 
-    stack2.push("overflow");
+    LS2.push("overflow");
 
     string target2;
-    stack2.pop(target2);
+    LS2.pop(target2);
     cout << "target2 = " << target2 << endl;
-    stack2.print();
+    LS2.print();
 
     return 0;
 }

@@ -24,30 +24,24 @@ public:
         return size == capacity;
     }
 
-    void push(const T& data){
+    void push(const T& value){
         if(isFull()){
-            cout << "Stack is full" << endl;
+            cout << "Stack is full!" << endl;
             return;
         }
-        if(isEmpty()){
-            arr[top] = data;
-            size++;
-            return;
-        }
-        top++;
-        arr[top] = data;
+        arr[top++] = value;
         size++;
     }
 
     void pop(T& target){
         if(isEmpty()){
-            cout << "Stack is empty" << endl;
+            cout << "Stack is empty!" << endl;
             return;
         }
-        target = arr[top];
-        top--;
         size--;
+        target = arr[--top];
     }
+
     void print(){
         for(int i = size - 1; i >= 0; i--){
             cout << arr[i] << " ";
@@ -67,7 +61,7 @@ int main(){
 
     s.push(6); // Stack is full
 
-    int target;
+    int target = 0;
     s.pop(target);
     cout << "target = " << target << endl;
     s.print();
@@ -84,7 +78,7 @@ int main(){
 
     s2.push("Test"); // Stack is full
 
-    string target2;
+    string target2 = "";
     s2.pop(target2);
     cout << "target2 = " << target2 << endl;
     s2.print();
