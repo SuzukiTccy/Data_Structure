@@ -7,10 +7,10 @@ using namespace std;
 
 //二叉树
 struct TreeNode{
-    int val;
+    int data;
     TreeNode* left;
     TreeNode* right;
-    TreeNode(int x, TreeNode* l = nullptr, TreeNode* r = nullptr):val(x), left(nullptr), right(nullptr){}
+    TreeNode(int x, TreeNode* l = nullptr, TreeNode* r = nullptr):data(x), left(nullptr), right(nullptr){}
 };
 
 template <class T>
@@ -33,20 +33,20 @@ public:
         cout << "BinaryTree release!" << endl;
     }
 
-    virtual void searchNode(const int& target){};
+    virtual T* searchNode(const int& target){return nullptr;};
     virtual void insertNode(const int& data){};
     virtual void deleteNode(const int& target){};
 
     //节点高度
-    size_t nodeHeight(const T* node){
+    int nodeHeight(const T* node){
         if(node == nullptr) return -1;
-        size_t leftheight = nodeHeight(node->left);
-        size_t rightheight = nodeHeight(node->right);
-        return leftheight > rightheight ? leftheight + 1 : rightheight + 1;
+        int leftheight = nodeHeight(node->left);
+        int rightheight = nodeHeight(node->right);
+        return leftheight > rightheight ? leftheight + 1: rightheight + 1;
     }
 
     // 树高度
-    size_t treeHeight(){
+    int treeHeight(){
         return nodeHeight(this->root);
     }
 
@@ -59,7 +59,7 @@ public:
         while(!q.empty()){
             cur = q.front();
             q.pop();
-            cout << cur->val << " ";
+            cout << cur->data << " ";
             if(cur->left != nullptr) q.push(cur->left);
             if(cur->right != nullptr) q.push(cur->right);
         }
@@ -80,7 +80,7 @@ public:
         while(!s.empty()){
             cur = s.top();
             s.pop();
-            cout << cur->val << " ";
+            cout << cur->data << " ";
             if(cur->right != nullptr) s.push(cur->right);
             if(cur->left != nullptr) s.push(cur->left);
         }
@@ -107,7 +107,7 @@ public:
             // 2. pop and print
             cur = s.top();
             s.pop();
-            cout << cur->val << " ";
+            cout << cur->data << " ";
 
             // 3. turn to right node
             // In this part, the cur dont have left node
@@ -126,7 +126,7 @@ public:
         if(root == nullptr) return;
         postOrder(root->left);
         postOrder(root->right);
-        cout << root->val << " ";
+        cout << root->data << " ";
     }
 
     void postOrder(){
@@ -162,7 +162,7 @@ public:
                 // vec.push_back(temp);
 
                 if (temp){
-                    std::cout << std::setw(2) << temp->val;
+                    std::cout << std::setw(2) << temp->data;
                     q.push(temp->left);
                     q.push(temp->right);
                 }
