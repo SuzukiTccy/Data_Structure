@@ -6,18 +6,25 @@ int main() {
     avlTree tree(new avlNode(10));
     tree.insertNode(11);
     tree.PrintTree();
+
     tree.insertNode(12);
     tree.PrintTree();
+
     tree.insertNode(12);
     tree.PrintTree();
+
     tree.insertNode(8);
     tree.PrintTree();
+
     tree.insertNode(9);
     tree.PrintTree();
+
     tree.insertNode(4);
     tree.PrintTree();
+
     tree.insertNode(6);
     tree.PrintTree();
+    
     tree.insertNode(7);
     tree.PrintTree();
 

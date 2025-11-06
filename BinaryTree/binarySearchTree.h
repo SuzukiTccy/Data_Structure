@@ -1,4 +1,5 @@
 #include<iostream>
+#include<stack>
 #include "binaryTree.h"
 using namespace std;
 
@@ -26,24 +27,25 @@ public:
                 std::cout << "the data: " << target << " has been found" << std::endl;
                 return curr;
             }
-            if(curr->data > target) curr = curr->left;
-            else curr = curr->right;
+            curr = curr->data > target ? curr->left : curr->right;
         }
         std::cout << "searchNode(): the data: " << target << " has not been found!!" << std::endl;
         return nullptr;
     }
-
-    void insertNode(const int& data) {
+    
+    stack<T*> insertNode(const int& data) {
         if(this->root == nullptr){
             this->root = new T(data);
-            return;
+            return stack<T*>();
         }
+        stack<T*> s; // 存储遍历过的节点，为了给AVL树类使用
         T* curr = this->root;
         T* prev = nullptr;
         while(curr != nullptr) {
+            s.push(curr);
             if(curr->data == data) {
                 cout << "the data: " << data << " already exists!!" << endl;
-                return;
+                return s;
             }
             prev = curr;
             if(curr->data > data) curr = curr->left;
@@ -53,8 +55,10 @@ public:
         T* newNode = new T(data);
         if(prev->data > data) prev->left = newNode;
         else prev->right = newNode;
+        s.push(newNode);
 
         cout << "the data: " << data << " has been inserted" << endl;
+        return s;
     }
 
     T* searchPrant(const int& target) {
@@ -114,12 +118,12 @@ public:
         // 把toDelect的左子树放到toDelect的右子树的最左节点上
         // 把toDelect的父节点指向toDelect的右节点
         else {
-            // 4.1 被删除节点右子树的最左边节点
+            // 4.1 找到被删除节点右子树的最左边节点
             T* toDelectRightTree_left_node = toDelete->right;
             while(toDelectRightTree_left_node->left != nullptr) \
             toDelectRightTree_left_node = toDelectRightTree_left_node->left;
             
-            // 4.2 被删除节点的左子树放到被删除节点的右子树的最左边节点上
+            // 4.2 把被删除节点的左子树放到被删除节点的右子树的最左边节点上
             toDelectRightTree_left_node->left = toDelete->left;
 
             // 4.3 被删除节点的父节点指向被删除节点的右子树
@@ -132,176 +136,3 @@ public:
         cout << "the data: " << data << " has been deleted" << endl;
     }
 };
-
-
-
-
-
-
-
-
-
-// #include<iostream>
-// #include "binaryTree.h"
-
-
-// template <class T>
-// class BST : public BinaryTree<T>{
-// public:
-//     BST(T* root = nullptr): BinaryTree<T>(root){}
-//     ~BST(){}
-
-//     void searchNode(const int &target){
-//         if (this->root == nullptr){
-//             std::cout << "empty tree" << std::endl;
-//             return;
-//         }
-//         T* temp = this->root;
-//         while(true){
-//             if (target == temp->data){
-//                 std::cout << "the data: " << target << " has been found" << std::endl;
-//                 return;
-//             }
-//             if (target < temp->data){
-//                 if (temp->left == nullptr){
-//                     std::cout << "the data: " << target << " has not been found" << std::endl;
-//                     return;
-//                 }else temp = temp->left;
-//             }
-//             if (target > temp->data){
-//                 if (temp->right == nullptr){
-//                     std::cout << "the data: " << target << " has not been found" << std::endl;
-//                     return;
-//                 }else temp = temp->right;
-//             }
-
-//         }
-//     }
-
-//     void insertNode(const int &data){
-//         if (this->root == nullptr){
-//             std::cout << "empty tree" << std::endl;
-//             return;
-//         }
-//         T* newNode = new T(data);
-//         T* temp = this->root;
-//         while(true){
-//             if (data == temp->data){
-//                 std::cout << "the data: " << data << " already exists" << std::endl;
-//                 return;
-//             }
-//             if (data < temp->data){
-//                 if (temp->left == nullptr){
-//                     temp->left = newNode;
-//                     break;
-//                 }
-//                 temp = temp->left;
-//                 continue;
-//             }
-//             if (data > temp->data){
-//                 if (temp->right == nullptr){
-//                     temp->right = newNode;
-//                     break;
-//                 }
-//                 temp = temp->right;
-//                 continue;
-//             }
-//         }
-//         std::cout << "the data: " << data << " has been inserted" << std::endl;
-//     }
-
-//     void deleteNode(const int &target){
-//         if (this->root == nullptr){
-//             std::cout << "empty tree" << std::endl;
-//             return;
-//         }
-//         // if the root node is the target node
-//         if (this->root->data == target){
-//             // if the root node is a leaf node
-//             if (this->root->left == nullptr && this->root->right == nullptr){
-//                 delete this->root;
-//                 this->root = nullptr;
-//                 return;
-//             }
-//             // if the root node have only right child
-//             if (this->root->left == nullptr){
-//                 T* temp = this->root;
-//                 this->root = temp->right;
-//                 delete temp;
-//                 temp = nullptr;
-//                 return;
-//             }
-//             // if the root node have only left child
-//             if (this->root->right == nullptr){
-//                 T* temp = this->root;
-//                 this->root = temp->left;
-//                 delete temp;
-//                 temp = nullptr;
-//                 return;
-//             }
-//         }
-
-//         T* temp = this->root;
-//         T* parent = nullptr;
-//         while(true){
-//             if (target == temp->data){
-//                 // if the node to be deleted is a leaf node
-//                 if (temp->left == nullptr && temp->right == nullptr){
-//                     if (parent->left == temp){
-//                         parent->left = nullptr;
-//                     }else parent->right = nullptr;
-//                     delete temp;
-//                     temp = nullptr;
-//                     break;
-//                 }
-//                 // find the largest node in the left subtree
-//                 if (temp->left != nullptr){
-//                     T* largestNodeParent = temp;
-//                     T* largestNode = temp->left;
-//                     while(largestNode->right != nullptr){
-//                         largestNodeParent = largestNode;
-//                         largestNode = largestNode->right;
-//                     }
-//                     // if the largest node have a left child
-//                     if (largestNode->left){
-//                         // if the largest node is the left child of temp
-//                         if (largestNode == temp->left){
-//                             largestNodeParent->left = largestNode->left; // the largest node's left child becomes the left child of its parent
-//                         }else largestNodeParent->right = largestNode->left; // if the largest node is the right child of its parent
-//                     }else largestNodeParent->right = nullptr;
-//                     temp->data = largestNode->data;
-//                     delete largestNode;
-//                     largestNode = nullptr;
-//                     break;
-//                 }else{
-//                     if (parent->left == temp){
-//                         parent->left = temp->right;
-//                     }else parent->right = temp->right;
-//                     delete temp;
-//                     temp = nullptr;
-//                 }
-//             }
-//             if (target < temp->data){
-//                 if (temp->left == nullptr){
-//                     std::cout << "data " << target <<  " not found" << std::endl;
-//                     return;
-//                 }else{
-//                     parent = temp;
-//                     temp = temp->left;
-//                     continue;
-//                 }
-//             }
-//             if (target > temp->data){
-//                 if (temp->right == nullptr){
-//                     std::cout << "data " << target <<  " not found" << std::endl;
-//                     return;
-//                 }else{
-//                     parent = temp;
-//                     temp = temp->right;
-//                     continue;
-//                 }
-//             }
-//         }
-//         std::cout << "the data:" << target << " has been deleted" << std::endl;
-//     }
-// };
