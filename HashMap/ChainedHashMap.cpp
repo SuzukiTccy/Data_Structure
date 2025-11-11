@@ -43,9 +43,28 @@ public:
                 delete temp;
             }
         }
+        delete[] table;
+    }
+
+    int search(int key){
+        size_t hash_value = hashFunction(capacity, key);
+        Node* node = table[hash_value];
+        while(node != nullptr){
+            if (node->key == key){
+                cout << "key:" << key << " " << "value:" << node->value << endl;
+                return node->value;
+            }
+            node = node->next;
+        }
+        cout << "Key not found" << endl;
+        return -INT64_MAX;
     }
 
     void insert(int key, int value){
+        if(search(key) == value){
+            cout << "Key already exists" << endl;
+            return;
+        }
         size_t hash_value = hashFunction(capacity, key);
         if(table[hash_value] == nullptr) table[hash_value] = new Node(key, value, nullptr);
         else{
@@ -54,6 +73,7 @@ public:
             node->next = new Node(key, value, nullptr);
         }
         size++;
+        extendMap();
     }
 
 /**
@@ -88,20 +108,6 @@ public:
         table = new_table;
         capacity = new_capacity;
         cout << "size:" << size << " new capacity:" << capacity << endl;
-    }
-
-    int search(int key){
-        size_t hash_value = hashFunction(capacity, key);
-        Node* node = table[hash_value];
-        while(node != nullptr){
-            if (node->key == key){
-                cout << "key:" << key << " " << "value:" << node->value << endl;
-                return node->value;
-            }
-            node = node->next;
-        }
-        cout << "Key not found" << endl;
-        return -1;
     }
 
     void remove(int key){
