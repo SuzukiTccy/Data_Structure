@@ -5,7 +5,7 @@ template <class T>
 class Stack{
 private:
     T *arr;
-    int top;
+    size_t top;
     size_t size;
     size_t capacity;
 public:

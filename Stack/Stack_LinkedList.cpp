@@ -5,6 +5,7 @@ template <class T>
 struct Node{
     T data;
     Node<T> *next;
+    Node(T data, Node<T> *next = nullptr):data(data), next(next){}
 };
 
 template <class T>
@@ -33,15 +34,20 @@ public:
         return size == capacity;
     }
 
+    T top() const{
+        if(isEmpty()){
+            cout << "LinkedStack is empty!" << endl;
+            return T();
+        }
+        return top->data;
+    }
+
     void push(const T &data){
         if(isFull()){
             cout << "LinkedStack is full!" << endl;
             return;
         }
-        Node<T> *newNode = new Node<T>;
-        newNode->data = data;
-        newNode->next = top;
-        top = newNode;
+        top = new Node<T>(data, top);
         size++;
     }
 
