@@ -79,7 +79,7 @@ public:
             temp = temp->next;
             cur++;
         }
-        if(cur < pos - 2){ // if position is greater than length of list
+        if(cur < pos - 1){ // if position is greater than length of list
             cout << "Invalid position" << endl;
             return;
         }
@@ -88,7 +88,7 @@ public:
         delete toDelete;
     }
 
-    void deleteNodesWithVal(const T& data){
+    void deleteNodeWithVal(const T& data){
         LinkedListNode<T>* temp = sentinel;
         while(temp->next != nullptr && temp->next->data != data){
             temp = temp->next;
@@ -155,10 +155,10 @@ int main(){
     LKlist.printList();
 
     cout << "LKlist.deleteNodesWithVal(10)" << endl;
-    LKlist.deleteNodesWithVal(10); // except print "The node with the given data does not exist"
+    LKlist.deleteNodeWithVal(10); // except print "The node with the given data does not exist"
 
     cout << "LKlist.deleteNodesWithVal(6)" << endl;
-    LKlist.deleteNodesWithVal(6);
+    LKlist.deleteNodeWithVal(6);
     LKlist.printList();
 
 
